@@ -41,7 +41,7 @@ enum{
 };
 
 enum{
-	SPI_SETFAST = 1,
+	SPI_SETSPEED = 1,
 	SPI_RW_1, // u16 u16
 };
 
@@ -54,6 +54,7 @@ enum{
 	MPU6500_INIT,
 	MPU6500_CHECK,
 	MPU6500_GETDATA,
+	MPU6500_GETRAWDATA,
 };
 
 // TODO: need separate GPIO module from SPI

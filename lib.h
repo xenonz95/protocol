@@ -16,7 +16,16 @@ uint8_t PWM_setting(uint8_t power);
 //PWM END
 
 //SPI
-uint8_t SPI_setFast();
+#define SPI_BaudRatePrescaler_2         ((uint16_t)0x0000)
+#define SPI_BaudRatePrescaler_4         ((uint16_t)0x0008)
+#define SPI_BaudRatePrescaler_8         ((uint16_t)0x0010)
+#define SPI_BaudRatePrescaler_16        ((uint16_t)0x0018)
+#define SPI_BaudRatePrescaler_32        ((uint16_t)0x0020)
+#define SPI_BaudRatePrescaler_64        ((uint16_t)0x0028)
+#define SPI_BaudRatePrescaler_128       ((uint16_t)0x0030)
+#define SPI_BaudRatePrescaler_256       ((uint16_t)0x0038)
+
+uint8_t SPI_setSpeed(uint16_t Prescaler);
 uint16_t SPI_rw_1(uint16_t readBuf,uint16_t writeBuf);
 //SPI END
 
@@ -256,6 +265,7 @@ uint16_t MPU6500_RWReg(uint16_t Data, uint8_t addr, uint8_t writeLen);
 int8_t MPU6500_Init(uint8_t *Configs, uint16_t len);
 int8_t MPU6500_Check();
 void MPU6500_getData(int16_t *pIMU);
+void MPU6500_getRAWData(uint8_t *data);
 //MPU6500 END
 
 

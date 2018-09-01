@@ -35,12 +35,25 @@ uint8_t PWM_setting(uint8_t power)
 	return ret;
 }
 
-uint8_t SPI_setFast()
+uint8_t SPI_setSpeed(uint16_t Prescaler)
 {
+	PARAMETER *args;
+	uint8_t *data = nullptr;
+	uint8_t *datap = nullptr;
+	int i = 0;
 	uint8_t ret = 0;
-	send_command(SPI_MODULE, SPI_SETFAST);
+
+	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 1);
+	data = (uint8_t *) (malloc(2));
+
+	datap = data;
+
+	add_PARAMETER(Prescaler, 2);
+
+	send_commend_with_arg(SPI_MODULE, SPI_SETSPEED, 1, args, data);
 	ret = (uint8_t) get_data(nullptr);
 	return ret;
+
 }
 
 uint16_t SPI_rw_1(uint16_t readBuf, uint16_t writeBuf)
@@ -168,6 +181,12 @@ void MPU6500_getData(int16_t *pIMU)
 {
 	send_command(MPU6500_MODULE, MPU6500_GETDATA);
 	get_data((uint8_t *) pIMU);
+}
+
+void MPU6500_getRAWData(uint8_t *data)
+{
+	send_command(MPU6500_MODULE, MPU6500_GETRAWDATA);
+	get_data(data);
 }
 
 int8_t MPU6500_Init(uint8_t *Configs, uint16_t len)

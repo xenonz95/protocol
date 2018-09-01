@@ -116,9 +116,9 @@ uint32_t get_data(uint8_t *data_holder)
 	while (ret < 12) {
 		ret_temp = read(file_d, data_buf + ret, 1);
 		if ( ret_temp > 0 ) {
-			printf("[%d] %d %x %c\n", static_cast<int>(ret), data_buf[ret], data_buf[ret], \
+			//printf("[%d] %d %x %c\n", static_cast<int>(ret), data_buf[ret], data_buf[ret], \
 		data_buf[ret]);
-			fflush((stdout));
+			//fflush((stdout));
 			if ( data_buf[0] == 0x55 ) {
 				ret += ret_temp;
 			}
@@ -129,7 +129,7 @@ uint32_t get_data(uint8_t *data_holder)
 		printf("[ERROR] head wrong. got %x %x\n", head.magic, head.end_magic);
 	}
 	len = *(uint16_t *) (data_buf + 10);
-	printf("%d\n",len);
+	//printf("%d\n",len);
 	if ( len == 4 | data_holder == nullptr ) {
 		for (int i = 0; i < 4; i++) {
 			ret_temp = read(file_d, ((uint8_t *) &return_buf) + i, 1);
@@ -140,9 +140,9 @@ uint32_t get_data(uint8_t *data_holder)
 	} else {
 		for (int i = 0; i < len; i++) {
 			ret_temp = read(file_d, data_holder + i, 1);
-			printf("[%d] %d %x %c\n", i, data_holder[i], data_holder[i], \
+			//printf("[%d] %d %x %c\n", i, data_holder[i], data_holder[i], \
 		data_holder[i]);
-			fflush((stdout));
+			//fflush((stdout));
 			if ( ret_temp < 0 ) {
 				i--;
 			}

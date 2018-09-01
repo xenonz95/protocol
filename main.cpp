@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstring>
 #include "lib.h"
 
 #define MPU6500_InitRegNum 11
@@ -30,12 +31,12 @@ int main()
 			{0x00, MPU6500_INT_PIN_CFG},
 			{0x08, MPU6500_ACCEL_CONFIG},
 			{0x07, MPU6500_CONFIG},
-			{0x11, MPU6500_ACCEL_CONFIG_2},
+			{0x0B, MPU6500_ACCEL_CONFIG_2},
 			{0x09, MPU6500_GYRO_CONFIG},
 	};
 
-
 	int16_t data[7]={0};
+	uint8_t raw_data[14]={0};
 
 	int8_t ret = 0;
 	uint16_t ret2 = 0;
@@ -59,12 +60,21 @@ int main()
 	Stepper_Move(2, 1, 2000*5/10);
 	Stepper_Move(3, 0, 2000);
 #endif
-	//printf("init is %d\n",MPU6500_Init((uint8_t*)my_InitData, 11));
-	printf("init is %d\n",MPU6500_Init(nullptr,11));
+	//printf("init is %d\n",MPU6500_Init((uint8_t*)MPU6500_InitData, 11));
+	printf("init is %d\n",MPU6500_Init((uint8_t*)my_InitData, 11));
+	//printf("init is %d\n",MPU6500_Init(nullptr,11));
+
+	usleep(20000);
+	//SPI_setSpeed(SPI_BaudRatePrescaler_8);
+	usleep(20000);
+while(1)
+{
 	MPU6500_getData(data);
 	for (int i = 0; i < 7; ++i) {
 		printf("data[%d] = %d\n", i, data[i]);
 	}
+	usleep(10000);
+}
 //	while(ret != '\r')
 //	{
 //		ret = get_data();
