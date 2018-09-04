@@ -177,16 +177,42 @@ int8_t MPU6500_Check()
 	return ret;
 }
 
-void MPU6500_getData(int16_t *pIMU)
+void MPU6500_getData(int16_t *pIMU, uint32_t lag)
 {
-	send_command(MPU6500_MODULE, MPU6500_GETDATA);
+	PARAMETER *args;
+	uint8_t *data = nullptr;
+	int8_t ret = 0;
+	uint8_t *datap = nullptr;
+	int i = 0;
+
+	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 1);
+	data = (uint8_t *) (malloc(4));
+
+	datap = data;
+
+	add_PARAMETER(lag, 4);
+
+	send_commend_with_arg(MPU6500_MODULE, MPU6500_GETDATA, 1, args, data);
 	get_data((uint8_t *) pIMU);
 }
 
-void MPU6500_getRAWData(uint8_t *data)
+void MPU6500_getRAWData(uint8_t *data1, uint32_t lag)
 {
-	send_command(MPU6500_MODULE, MPU6500_GETRAWDATA);
-	get_data(data);
+	PARAMETER *args;
+	uint8_t *data = nullptr;
+	int8_t ret = 0;
+	uint8_t *datap = nullptr;
+	int i = 0;
+
+	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 1);
+	data = (uint8_t *) (malloc(4));
+
+	datap = data;
+
+	add_PARAMETER(lag, 4);
+
+	send_commend_with_arg(MPU6500_MODULE, MPU6500_GETRAWDATA, 1, args, data);
+	get_data(data1);
 }
 
 int8_t MPU6500_Init(uint8_t *Configs, uint16_t len)

@@ -1,24 +1,29 @@
 #include <cstdio>
 #include <cstring>
 #include "lib.h"
+#include <ctime>
+#include <iostream>
+
+using namespace std;
 
 #define MPU6500_InitRegNum 11
+
 int main()
 {
 
-	 uint8_t MPU6500_InitData[MPU6500_InitRegNum][2] = {
-	     {0x80, MPU6500_PWR_MGMT_1},     // [0]  Reset Device
-	     {0x04, MPU6500_PWR_MGMT_1},     // [1]  Clock Source
-	     {0x10, MPU6500_INT_PIN_CFG},    // [2]  Set INT_ANYRD_2CLEAR
-	     {0x01, MPU6500_INT_ENABLE},     // [3]  Set RAW_RDY_EN
-	     {0x00, MPU6500_PWR_MGMT_2},     // [4]  Enable Acc & Gyro
-	     {0x00, MPU6500_SMPLRT_DIV},     // [5]  Sample Rate Divider
-	     {0x18, MPU6500_GYRO_CONFIG},    // [6]  default : +-2000dps
-	     {0x08, MPU6500_ACCEL_CONFIG},   // [7]  default : +-4G
-	     {0x07, MPU6500_CONFIG},         // [8]  default : LPS_41Hz
-	     {0x03, MPU6500_ACCEL_CONFIG_2}, // [9]  default : LPS_41Hz
-	     {0x30, MPU6500_USER_CTRL},      // [10] Set I2C_MST_EN, I2C_IF_DIS
-	 };
+	uint8_t MPU6500_InitData[MPU6500_InitRegNum][2] = {
+			{0x80, MPU6500_PWR_MGMT_1},     // [0]  Reset Device
+			{0x04, MPU6500_PWR_MGMT_1},     // [1]  Clock Source
+			{0x10, MPU6500_INT_PIN_CFG},    // [2]  Set INT_ANYRD_2CLEAR
+			{0x01, MPU6500_INT_ENABLE},     // [3]  Set RAW_RDY_EN
+			{0x00, MPU6500_PWR_MGMT_2},     // [4]  Enable Acc & Gyro
+			{0x00, MPU6500_SMPLRT_DIV},     // [5]  Sample Rate Divider
+			{0x18, MPU6500_GYRO_CONFIG},    // [6]  default : +-2000dps
+			{0x08, MPU6500_ACCEL_CONFIG},   // [7]  default : +-4G
+			{0x07, MPU6500_CONFIG},         // [8]  default : LPS_41Hz
+			{0x03, MPU6500_ACCEL_CONFIG_2}, // [9]  default : LPS_41Hz
+			{0x30, MPU6500_USER_CTRL},      // [10] Set I2C_MST_EN, I2C_IF_DIS
+	};
 
 
 	uint8_t my_InitData[MPU6500_InitRegNum][2] = {
@@ -35,8 +40,8 @@ int main()
 			{0x09, MPU6500_GYRO_CONFIG},
 	};
 
-	int16_t data[7]={0};
-	uint8_t raw_data[14]={0};
+	int16_t data[7] = {0};
+	uint8_t raw_data[14] = {0};
 
 	int8_t ret = 0;
 	uint16_t ret2 = 0;
@@ -60,21 +65,32 @@ int main()
 	Stepper_Move(2, 1, 2000*5/10);
 	Stepper_Move(3, 0, 2000);
 #endif
+	SPI_setSpeed(SPI_BaudRatePrescaler_256);
+	usleep(200000);
 	//printf("init is %d\n",MPU6500_Init((uint8_t*)MPU6500_InitData, 11));
-	printf("init is %d\n",MPU6500_Init((uint8_t*)my_InitData, 11));
+	printf("init is %d\n", MPU6500_Init((uint8_t *) my_InitData, 11));
 	//printf("init is %d\n",MPU6500_Init(nullptr,11));
 
-	usleep(20000);
-	//SPI_setSpeed(SPI_BaudRatePrescaler_8);
-	usleep(20000);
-while(1)
-{
-	MPU6500_getData(data);
-	for (int i = 0; i < 7; ++i) {
-		printf("data[%d] = %d\n", i, data[i]);
-	}
+	if( MPU6500_Check() == 1)
+		printf("check is ok\n");
+
 	usleep(10000);
-}
+	SPI_setSpeed(SPI_BaudRatePrescaler_8);
+	usleep(10000);
+
+	clock_t t1 = clock();
+
+	while (1) {
+		t1 = clock();
+		MPU6500_getData(data, 1000);
+
+		for (int i = 0; i < 7; ++i) {
+
+			printf("data[%d] = %d\n", i, data[i]);
+		}cout << (clock()- t1)*1.0/CLOCKS_PER_SEC*1000 << endl;
+		//system("clear");
+		//usleep(1);
+	}
 //	while(ret != '\r')
 //	{
 //		ret = get_data();
