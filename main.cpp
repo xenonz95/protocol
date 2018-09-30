@@ -79,10 +79,10 @@ int main()
 	usleep(10000);
 
 	clock_t t1 = clock();
-
-	while (1) {
+	int loop = 3;
+	while (loop --> 0) {
 		t1 = clock();
-		MPU6500_getData(data, 1000);
+		MPU6500_getData(data, 100000000);
 
 		for (int i = 0; i < 7; ++i) {
 

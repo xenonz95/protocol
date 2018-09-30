@@ -99,17 +99,17 @@ enum{
 	COMMAND_STATE_IDLE,
 	COMMAND_STATE_DECODING,
 };
-
+extern "C" {
 int8_t protocol_init();
 void protocol_deinit();
 
 uint32_t get_data(uint8_t *data_holder);
 ssize_t send_data(uint8_t data_holder, uint8_t *data_from_sender, uint16_t len);
 
-ssize_t send_commend_with_arg(uint16_t module_code, uint16_t command_code,int num, PARAMETER*
-args, uint8_t* data_from_sender);
+ssize_t send_commend_with_arg(uint16_t module_code, uint16_t command_code, int num, PARAMETER *
+args, uint8_t *data_from_sender);
 ssize_t send_command(uint16_t module_code, uint16_t command_code);
-
+}
 
 
 

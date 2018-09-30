@@ -39,7 +39,7 @@ int8_t protocol_init()
 
 	oldtio.c_cflag &= ~CRTSCTS; //no flow control
 
-	tcflush(file_d, TCIFLUSH);
+	tcflush(file_d, TCIOFLUSH);
 
 	oldtio.c_cc[VTIME] = 0;
 	oldtio.c_cc[VMIN] = 0;

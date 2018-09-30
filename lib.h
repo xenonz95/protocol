@@ -261,12 +261,13 @@ typedef struct
 #define MPU6500_I2C_SLV4_NACK ((uint8_t)0x10)
 /*=====================================================================================================*/
 /*=====================================================================================================*/
+extern "C" {
 uint16_t MPU6500_RWReg(uint16_t Data, uint8_t addr, uint8_t writeLen);
 int8_t MPU6500_Init(uint8_t *Configs, uint16_t len);
 int8_t MPU6500_Check();
 void MPU6500_getData(int16_t *pIMU, uint32_t lag);
 void MPU6500_getRAWData(uint8_t *data, uint32_t lag);
 //MPU6500 END
-
+}
 
 #endif //PROTOCOL_LIB_H
