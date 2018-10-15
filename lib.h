@@ -12,7 +12,9 @@
 
 
 //PWM
+extern "C" {
 uint8_t PWM_setting(uint8_t power);
+}
 //PWM END
 
 //SPI
@@ -24,12 +26,14 @@ uint8_t PWM_setting(uint8_t power);
 #define SPI_BaudRatePrescaler_64        ((uint16_t)0x0028)
 #define SPI_BaudRatePrescaler_128       ((uint16_t)0x0030)
 #define SPI_BaudRatePrescaler_256       ((uint16_t)0x0038)
-
+extern "C" {
 uint8_t SPI_setSpeed(uint16_t Prescaler);
-uint16_t SPI_rw_1(uint16_t readBuf,uint16_t writeBuf);
+uint16_t SPI_rw_1(uint16_t readBuf, uint16_t writeBuf);
+}
 //SPI END
 
 //STEPPER
+extern "C" {
 int8_t Stepper_Init(uint8_t ch); // ch = 2 PA0 PA1
 //int8_t Stepper_Enable(uint8_t ch, uint8_t enable);
 int8_t Stepper_Set_Speed(uint8_t ch, uint32_t max_speed, uint32_t min_speed); // max 1500 min 500
@@ -40,6 +44,7 @@ int8_t Stepper_Move(uint8_t ch, uint8_t dir, uint32_t steps); //use this
 //int8_t Stepper_Stop(uint8_t ch);
 //int8_t Stepper_Hard_Stop(uint8_t ch);
 //int8_t Stepper_Is_Busy(uint8_t ch);
+}
 //STEPPER END
 
 //MPU6500
@@ -267,7 +272,12 @@ int8_t MPU6500_Init(uint8_t *Configs, uint16_t len);
 int8_t MPU6500_Check();
 void MPU6500_getData(int16_t *pIMU, uint32_t lag);
 void MPU6500_getRAWData(uint8_t *data, uint32_t lag);
-//MPU6500 END
+
 }
+//MPU6500 END
+
+//debug start
+void Protocol_debug(uint32_t d1,uint32_t d2,uint32_t d3,uint32_t d4);
+
 
 #endif //PROTOCOL_LIB_H

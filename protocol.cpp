@@ -2,6 +2,7 @@
 // Created by root on 18-8-9.
 //
 
+#include <cstring>
 #include "type.h"
 #include "protocol.h"
 
@@ -95,6 +96,9 @@ args, uint8_t *data_from_sender)
 	free(args);
 	free(data_from_sender);
 	ret = write(file_d, data, len + sizeof(head));
+	if ( ret != len + sizeof(head)) {
+		exit(-1);
+	}
 	//printf("[send_commend_with_arg]ret = %zi\n", ret);
 	return ret;
 }
@@ -104,48 +108,76 @@ ssize_t send_command(uint16_t module_code, uint16_t command_code)
 	return send_commend_with_arg(module_code, command_code, 0, NULL, NULL);
 }
 
+char get_data_buf[1024] = {0,};
+
 uint32_t get_data(uint8_t *data_holder)
 {
-	ssize_t ret = 0;
+	ssize_t ret;
 	ssize_t ret_temp = 0;
 	uint8_t data_buf[12] = {0};
 	uint32_t return_buf = 0;
 	uint16_t len = 0;
+	uint8_t *datap = NULL;
+
 
 	COMMAND_HEADER head;
-	while (ret < 12) {
-		ret_temp = read(file_d, data_buf + ret, 1);
-		if ( ret_temp > 0 ) {
-			//printf("[%d] %d %x %c\n", static_cast<int>(ret), data_buf[ret], data_buf[ret], \
-		data_buf[ret]);
-			//fflush((stdout));
-			if ( data_buf[0] == 0x55 ) {
-				ret += ret_temp;
+	bool isData = 0;
+	while (isData == 0) {
+		//memset(data_buf, 0, 10);
+		ret = 0;
+		return_buf = 0;
+		while (ret < 12) {
+			ret_temp = read(file_d, data_buf + ret, 1);
+			if ( ret_temp > 0 ) {
+				//printf("[%d] %d %x %c\n", int(ret), data_buf[ret], data_buf[ret], \
+        data_buf[ret]);
+				//fflush((stdout));
+				if ( data_buf[0] == 0x55 ) {
+					ret += ret_temp;
+				}
+				else
+				{
+					putchar(data_buf[0]);
+					putchar('\n');
+				}
 			}
 		}
-	}
-	head = *(COMMAND_HEADER *) data_buf;
-	if ( head.magic != PROTOCOL_MAGIC || head.end_magic != PROTOCOL_MAGIC ) {
-		printf("[ERROR] head wrong. got %x %x\n", head.magic, head.end_magic);
-	}
-	len = *(uint16_t *) (data_buf + 10);
-	//printf("%d\n",len);
-	if ( len == 4 | data_holder == nullptr ) {
-		for (int i = 0; i < 4; i++) {
-			ret_temp = read(file_d, ((uint8_t *) &return_buf) + i, 1);
-			if ( ret_temp < 0 ) {
-				i--;
+		head = *(COMMAND_HEADER *) data_buf;
+		if ( head.magic != PROTOCOL_MAGIC || head.end_magic != PROTOCOL_MAGIC ) {
+			printf("[ERROR] head wrong. got %x %x\n", head.magic, head.end_magic);
+		}
+		len = *(uint16_t *) (data_buf + 10);
+		if ( head.command_code == PROTOCOL_PRINT && head.module_code == PROTOCOL_MODULE ) {
+			datap = (uint8_t *) get_data_buf;
+			memset(get_data_buf, 0, 1024);
+		} else {
+			datap = data_holder;
+		}
+		//printf("len is %d\n", len);
+		//fflush(stdout);
+		if ( len == 4 | datap == nullptr ) {
+			for (int i = 0; i < 4; i++) {
+				ret_temp = read(file_d, ((uint8_t *) &return_buf) + i, 1);
+				if ( ret_temp < 0 ) {
+					i--;
+				}
+			}
+		} else {
+			for (int i = 0; i < len; i++) {
+				ret_temp = read(file_d, datap + i, 1);
+				//printf("[%d] %d %x %c\n", i, datap[i], datap[i], datap[i]);
+				//fflush((stdout));
+				if ( ret_temp < 0 ) {
+					i--;
+				}
 			}
 		}
-	} else {
-		for (int i = 0; i < len; i++) {
-			ret_temp = read(file_d, data_holder + i, 1);
-			//printf("[%d] %d %x %c\n", i, data_holder[i], data_holder[i], \
-		data_holder[i]);
-			//fflush((stdout));
-			if ( ret_temp < 0 ) {
-				i--;
-			}
+		//printf("code is %d", head.command_code);
+		if ( head.command_code == PROTOCOL_PRINT && head.module_code == PROTOCOL_MODULE ) {
+			printf("[core]%s", datap);
+			fflush(stdout);
+		} else {
+			isData = 1;
 		}
 	}
 	return return_buf;
@@ -161,14 +193,13 @@ ssize_t send_data(uint8_t data_holder, uint8_t *data_from_sender, uint16_t len)
 	head.end_magic = PROTOCOL_MAGIC;
 	head.module_code = PROTOCOL_MODULE;
 	head.command_code = data_holder;
-	head.command_length = (uint16_t)12 + len;
-	data = (uint8_t*)malloc(head.command_length);
+	head.command_length = (uint16_t) 12 + len;
+	data = (uint8_t *) malloc(head.command_length);
 
-	*(COMMAND_HEADER*)data = head;
-	*(uint16_t*)(data+10) = len;
-	for(int i = 0; i< len; i++)
-	{
-		(data+12)[i] = data_from_sender[i];
+	*(COMMAND_HEADER *) data = head;
+	*(uint16_t *) (data + 10) = len;
+	for (int i = 0; i < len; i++) {
+		(data + 12)[i] = data_from_sender[i];
 	}
 
 //	printf("send data ====================\n");

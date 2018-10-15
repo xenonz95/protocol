@@ -66,6 +66,7 @@ int main()
 	Stepper_Move(3, 0, 2000);
 #endif
 	SPI_setSpeed(SPI_BaudRatePrescaler_256);
+	printf("set ok\n");
 	usleep(200000);
 	//printf("init is %d\n",MPU6500_Init((uint8_t*)MPU6500_InitData, 11));
 	printf("init is %d\n", MPU6500_Init((uint8_t *) my_InitData, 11));
@@ -73,6 +74,7 @@ int main()
 
 	if( MPU6500_Check() == 1)
 		printf("check is ok\n");
+	
 
 	usleep(10000);
 	SPI_setSpeed(SPI_BaudRatePrescaler_8);

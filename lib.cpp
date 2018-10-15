@@ -2,6 +2,7 @@
 // Created by root on 18-8-29.
 //
 
+#include <cstring>
 #include "type.h"
 #include "lib.h"
 
@@ -247,4 +248,31 @@ int8_t MPU6500_Init(uint8_t *Configs, uint16_t len)
 	send_commend_with_arg(MPU6500_MODULE, MPU6500_INIT, 2, args, data);
 	ret = (int8_t) get_data(nullptr);
 	return ret;
+}
+
+
+//==================================
+void Protocol_debug(uint32_t d1, uint32_t d2, uint32_t d3, uint32_t d4)
+{
+	PARAMETER *args;
+	uint8_t *data = nullptr;
+	int8_t ret = 0;
+	uint8_t *datap = nullptr;
+	int i = 0;
+	char print[1024];
+
+	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 4);
+	data = (uint8_t *) (malloc(4));
+
+	datap = data;
+
+	add_PARAMETER(d1, 4);
+	add_PARAMETER(d2, 4);
+	add_PARAMETER(d3, 4);
+	add_PARAMETER(d4, 4);
+
+	send_commend_with_arg(PROTOCOL_MODULE, PROTOCOL_DEBUG, 4, args, data);
+	memset(print, 0, 1024);
+	ret = get_data((uint8_t *) print);
+	printf("[DEBUG] ret = %d\n", ret);
 }
