@@ -18,101 +18,44 @@
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
-#include "type.h"
+#include <cstdint>
 
 
-extern uint8_t command_flag ;
+extern uint8_t command_flag;
 
-enum{
-	PROTOCOL_MODULE = 0,
-	SPI_MODULE = 1,
-	PWM_MODULE,
-	MPU6500_MODULE,
-	GPIO_MODULE,
-	STEPPER_MODULE,
-};
+typedef struct {
+	int32_t p1; //four parameter
+	int32_t p2;
+	int32_t p3;
+	int32_t p4;
+} PROTOCOL_DATA_normal;
 
-enum{
-	PROTOCOL_FAIL = 0,
-	PROTOCOL_DATA1 = 1,
-	PROTOCOL_DATA2,
-	PROTOCOL_PURE_DATA,
-	PROTOCOL_DEBUG,
-	PROTOCOL_PRINT,
+typedef struct {
+	uint8_t data[16]; //pure data
+} PROTOCOL_DATA_pure;
 
-};
+typedef union {
+	PROTOCOL_DATA_normal normal;
+	PROTOCOL_DATA_pure pure;
+} PROTOCOL_DATA;
 
-enum{
-	SPI_SETSPEED = 1,
-	SPI_RW_1, // u16 u16
-};
+typedef struct {
+	uint16_t moudle;
+	uint16_t command;
+	PROTOCOL_DATA data;
+} PROTOCOL_INS;
 
-enum{
-	PWM_SETTING = 1, // u8
-};
-
-enum{
-	MPU6500_RWREG = 1,
-	MPU6500_INIT,
-	MPU6500_CHECK,
-	MPU6500_GETDATA,
-	MPU6500_GETRAWDATA,
-};
-
-// TODO: need separate GPIO module from SPI
-
-enum{
-	STEPPER_INIT = 1,
-	STEPPER_ENABLE,
-	STEPPER_SET_SPEED,
-	STEPPER_SET_HOME,       //TODO
-	STEPPER_GET_POSITION,   //TODO
-	STEPPER_MOVE,
-	STEPPER_RUN,            //TODO
-	STEPPER_STOP,           //TODO
-	STEPPER_HARD_STOP,      //TODO
-	STEPPER_IS_BUSY,        //TODO
-
-};
-
-typedef struct
-{
+typedef struct {
 	uint16_t magic; //PROTOCOL_MAGIC
-	uint16_t command_length; //maximum 64K bytes
+	uint16_t length; //maximum 64K bytes
+} PROTOCOL_HEAD;
 
-	uint16_t module_code;
-	uint16_t command_code;
-	uint16_t end_magic;
-} COMMAND_HEADER;
 
-typedef struct
-{
-	uint16_t parameter_length; //bytes of current parameter
-	uint8_t* parametar_value;
-} PARAMETER;
-
-typedef struct
-{
-	uint16_t return_length; //bytes of current parameter
-	uint8_t return_value[];
-} RETURN;
-
-enum{
-	COMMAND_STATE_IDLE,
-	COMMAND_STATE_DECODING,
-};
+extern uint8_t command_flag;
 extern "C" {
-int8_t protocol_init();
-void protocol_deinit();
-
-uint32_t get_data(uint8_t *data_holder);
-ssize_t send_data(uint8_t data_holder, uint8_t *data_from_sender, uint16_t len);
-
-ssize_t send_commend_with_arg(uint16_t module_code, uint16_t command_code, int num, PARAMETER *
-args, uint8_t *data_from_sender);
-ssize_t send_command(uint16_t module_code, uint16_t command_code);
+void PROTOCOL_send(uint16_t length, PROTOCOL_INS *ins);
+int32_t PROTOCOL_decode();
 }
-
 
 
 #endif //PROTOCOL_PROTOCOL_H

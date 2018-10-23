@@ -11,19 +11,19 @@ using namespace std;
 int main()
 {
 
-	uint8_t MPU6500_InitData[MPU6500_InitRegNum][2] = {
-			{0x80, MPU6500_PWR_MGMT_1},     // [0]  Reset Device
-			{0x04, MPU6500_PWR_MGMT_1},     // [1]  Clock Source
-			{0x10, MPU6500_INT_PIN_CFG},    // [2]  Set INT_ANYRD_2CLEAR
-			{0x01, MPU6500_INT_ENABLE},     // [3]  Set RAW_RDY_EN
-			{0x00, MPU6500_PWR_MGMT_2},     // [4]  Enable Acc & Gyro
-			{0x00, MPU6500_SMPLRT_DIV},     // [5]  Sample Rate Divider
-			{0x18, MPU6500_GYRO_CONFIG},    // [6]  default : +-2000dps
-			{0x08, MPU6500_ACCEL_CONFIG},   // [7]  default : +-4G
-			{0x07, MPU6500_CONFIG},         // [8]  default : LPS_41Hz
-			{0x03, MPU6500_ACCEL_CONFIG_2}, // [9]  default : LPS_41Hz
-			{0x30, MPU6500_USER_CTRL},      // [10] Set I2C_MST_EN, I2C_IF_DIS
-	};
+//	uint8_t MPU6500_InitData[MPU6500_InitRegNum][2] = {
+//			{0x80, MPU6500_PWR_MGMT_1},     // [0]  Reset Device
+//			{0x04, MPU6500_PWR_MGMT_1},     // [1]  Clock Source
+//			{0x10, MPU6500_INT_PIN_CFG},    // [2]  Set INT_ANYRD_2CLEAR
+//			{0x01, MPU6500_INT_ENABLE},     // [3]  Set RAW_RDY_EN
+//			{0x00, MPU6500_PWR_MGMT_2},     // [4]  Enable Acc & Gyro
+//			{0x00, MPU6500_SMPLRT_DIV},     // [5]  Sample Rate Divider
+//			{0x18, MPU6500_GYRO_CONFIG},    // [6]  default : +-2000dps
+//			{0x08, MPU6500_ACCEL_CONFIG},   // [7]  default : +-4G
+//			{0x07, MPU6500_CONFIG},         // [8]  default : LPS_41Hz
+//			{0x03, MPU6500_ACCEL_CONFIG_2}, // [9]  default : LPS_41Hz
+//			{0x30, MPU6500_USER_CTRL},      // [10] Set I2C_MST_EN, I2C_IF_DIS
+//	};
 
 
 	uint8_t my_InitData[MPU6500_InitRegNum][2] = {
@@ -41,11 +41,6 @@ int main()
 	};
 
 	int16_t data[7] = {0};
-	uint8_t raw_data[14] = {0};
-
-	int8_t ret = 0;
-	uint16_t ret2 = 0;
-	protocol_init();
 #if 0
 	ret = MPU6500_Check();
 	printf("ret check = %d\n",ret);
@@ -99,6 +94,5 @@ int main()
 //		if(ret != 0xAA)
 //			printf("%4x, %c\n",ret,ret);
 //	}
-	protocol_deinit();
 	return 0;
 }

@@ -13,7 +13,6 @@ using namespace std;
 int main()
 {
 	int ret = 0;
-	protocol_init();
 	clock_t t1 = clock();
 	PWM_setting(16);
 	cout << (clock()- t1)*1.0/CLOCKS_PER_SEC*1000 << endl;t1 = clock();
@@ -39,9 +38,7 @@ int main()
 	ret = Stepper_Move(3,0,100);
 	cout << (clock()- t1)*1.0/CLOCKS_PER_SEC*1000 << endl;t1 = clock();
 	printf("ret23 = %d\n",ret);
-
-	protocol_deinit();
-
+	
 	return 0;
 }
 

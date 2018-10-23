@@ -3,276 +3,187 @@
 //
 
 #include <cstring>
-#include "type.h"
 #include "lib.h"
+#include "protocol.h"
+
+uint8_t data_holder1[1024];
+uint8_t DATA_counter = 0;
 
 
-#define add_PARAMETER(arg, len) {int k = 0;\
-                                args[i].parameter_length = sizeof(arg);\
-                                args[i].parametar_value = datap;\
-                                for(k = len - 1;k >= 0; k--)\
-                                {args[i].parametar_value[k] = ((uint8_t*)&arg)[k];}\
-                                datap += args[i].parameter_length;\
-                                i++;}
+static inline PROTOCOL_INS pack_data(uint16_t module,
+                                     uint16_t command,
+                                     uint8_t data[16])
+{
+	PROTOCOL_INS temp_ins;
+	temp_ins.moudle = module;
+	temp_ins.command = command;
+	memcpy(temp_ins.data.pure.data, data, 16);
+	return temp_ins;
+}
 
+static inline PROTOCOL_INS pack_function(uint16_t module,
+                                         uint16_t command,
+                                         int32_t p1,
+                                         int32_t p2,
+                                         int32_t p3,
+                                         int32_t p4)
+{
+	PROTOCOL_INS temp_ins;
+	temp_ins.moudle = module;
+	temp_ins.command = command;
+	temp_ins.data.normal.p1 = p1;
+	temp_ins.data.normal.p2 = p2;
+	temp_ins.data.normal.p3 = p3;
+	temp_ins.data.normal.p4 = p4;
+	return temp_ins;
+}
 
 uint8_t PWM_setting(uint8_t power)
 {
-	PARAMETER *args;
-	uint8_t *data = nullptr;
-	uint8_t ret = 0;
-	uint8_t *datap = nullptr;
-	int i = 0;
-
-	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 1);
-	data = (uint8_t *) (malloc(1));
-
-	datap = data;
-
-	add_PARAMETER(power, 1);
-
-	send_commend_with_arg(PWM_MODULE, PWM_SETTING, 1, args, data);
-	ret = (uint8_t) get_data(nullptr);
-	return ret;
+	PROTOCOL_INS ins = pack_function(PWM_MODULE, PWM_SETTING, power, 0, 0, 0);
+	PROTOCOL_send(1, &ins);
+	return (uint8_t) PROTOCOL_decode();
 }
 
-uint8_t SPI_setSpeed(uint16_t Prescaler)
+uint8_t SPI_setSpeed(uint16_t prescaler)
 {
-	PARAMETER *args;
-	uint8_t *data = nullptr;
-	uint8_t *datap = nullptr;
-	int i = 0;
-	uint8_t ret = 0;
-
-	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 1);
-	data = (uint8_t *) (malloc(2));
-
-	datap = data;
-
-	add_PARAMETER(Prescaler, 2);
-
-	send_commend_with_arg(SPI_MODULE, SPI_SETSPEED, 1, args, data);
-	ret = (uint8_t) get_data(nullptr);
-	return ret;
-
+	PROTOCOL_INS ins = pack_function(SPI_MODULE, SPI_SETSPEED, prescaler, 0, 0, 0);
+	PROTOCOL_send(1, &ins);
+	return (uint8_t) PROTOCOL_decode();
 }
 
 uint16_t SPI_rw_1(uint16_t readBuf, uint16_t writeBuf)
 {
-	PARAMETER *args;
-	uint8_t *data = nullptr;
-	uint8_t *datap = nullptr;
-	int i = 0;
-	uint16_t ret = 0;
-
-	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 2);
-	data = (uint8_t *) (malloc(2 + 2));
-
-	datap = data;
-
-	add_PARAMETER(readBuf, 2);
-	add_PARAMETER(writeBuf, 2);
-
-	send_commend_with_arg(SPI_MODULE, SPI_RW_1, 2, args, data);
-	ret = (uint16_t) get_data(nullptr);
-	return ret;
-
+	PROTOCOL_INS ins = pack_function(SPI_MODULE, SPI_RW_1, readBuf, writeBuf, 0, 0);
+	PROTOCOL_send(1, &ins);
+	return (uint16_t) PROTOCOL_decode();
 }
 
 // STEPPER_MODULE
 
 int8_t Stepper_Init(uint8_t ch)
 {
-	PARAMETER *args;
-	uint8_t *data = nullptr;
-	int8_t ret = 0;
-	uint8_t *datap = nullptr;
-	int i = 0;
-
-	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 1);
-	data = (uint8_t *) (malloc(1));
-
-	datap = data;
-
-	add_PARAMETER(ch, 1);
-
-	send_commend_with_arg(STEPPER_MODULE, STEPPER_INIT, 1, args, data);
-	ret = (int8_t) get_data(nullptr);
-	return ret;
+	PROTOCOL_INS ins = pack_function(STEPPER_MODULE, STEPPER_INIT, ch, 0, 0, 0);
+	PROTOCOL_send(1, &ins);
+	return (int8_t) PROTOCOL_decode();
 }
 
 
 int8_t Stepper_Set_Speed(uint8_t ch, uint32_t max_speed, uint32_t min_speed)
 {
-	PARAMETER *args;
-	uint8_t *data = nullptr;
-	uint8_t *datap = nullptr;
-	int i = 0;
-	uint8_t ret = 0;
-
-	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 3);
-	data = (uint8_t *) (malloc(1 + 4 + 4));
-
-	datap = data;
-
-	add_PARAMETER(ch, 1);
-	add_PARAMETER(max_speed, 4);
-	add_PARAMETER(min_speed, 4);
-
-	send_commend_with_arg(STEPPER_MODULE, STEPPER_SET_SPEED, 3, args, data);
-	ret = (int8_t) get_data(nullptr);
-	return ret;
+	PROTOCOL_INS ins = pack_function(STEPPER_MODULE, STEPPER_SET_SPEED, ch, max_speed, min_speed,
+	                                 0);
+	PROTOCOL_send(1, &ins);
+	return (int8_t) PROTOCOL_decode();
 }
 
 int8_t Stepper_Move(uint8_t ch, uint8_t dir, uint32_t steps)
 {
-	PARAMETER *args;
-	uint8_t *data = nullptr;
-	uint8_t *datap = nullptr;
-	int i = 0;
-	uint8_t ret = 0;
-
-	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 3);
-	data = (uint8_t *) (malloc(1 + 1 + 4));
-
-	datap = data;
-
-	add_PARAMETER(ch, 1);
-	add_PARAMETER(dir, 1);
-	add_PARAMETER(steps, 4);
-
-	send_commend_with_arg(STEPPER_MODULE, STEPPER_MOVE, 3, args, data);
-	ret = (int8_t) get_data(nullptr);
-	return ret;
+	PROTOCOL_INS ins = pack_function(STEPPER_MODULE, STEPPER_MOVE, ch, dir, steps, 0);
+	PROTOCOL_send(1, &ins);
+	return (int8_t) PROTOCOL_decode();
 }
 
 
 // MPU6500_MODULE
 uint16_t MPU6500_RWReg(uint16_t Data, uint8_t addr, uint8_t writeLen)
 {
-	PARAMETER *args;
-	uint8_t *data = nullptr;
-	uint8_t *datap = nullptr;
-	int i = 0;
-	uint16_t ret = 0;
-
-	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 3);
-	data = (uint8_t *) (malloc(2 + 1 + 1));
-
-	datap = data;
-
-	add_PARAMETER(Data, 2);
-	add_PARAMETER(addr, 1);
-	add_PARAMETER(writeLen, 1);
-
-	send_commend_with_arg(MPU6500_MODULE, MPU6500_RWREG, 3, args, data);
-	ret = (uint16_t) get_data(nullptr);
-	return ret;
+	PROTOCOL_INS ins = pack_function(MPU6500_MODULE, MPU6500_RWREG, Data, addr, writeLen, 0);
+	PROTOCOL_send(1, &ins);
+	return (uint16_t) PROTOCOL_decode();
 }
 
 int8_t MPU6500_Check()
 {
-	uint8_t ret = 0;
-	send_command(MPU6500_MODULE, MPU6500_CHECK);
-	ret = (int8_t) get_data(nullptr);
-	return ret;
+	PROTOCOL_INS ins = pack_function(MPU6500_MODULE, MPU6500_CHECK, 0, 0, 0, 0);
+	PROTOCOL_send(1, &ins);
+	return (int8_t) PROTOCOL_decode();
 }
 
 void MPU6500_getData(int16_t *pIMU, uint32_t lag)
 {
-	PARAMETER *args;
-	uint8_t *data = nullptr;
-	int8_t ret = 0;
-	uint8_t *datap = nullptr;
-	int i = 0;
-
-	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 1);
-	data = (uint8_t *) (malloc(4));
-
-	datap = data;
-
-	add_PARAMETER(lag, 4);
-
-	send_commend_with_arg(MPU6500_MODULE, MPU6500_GETDATA, 1, args, data);
-	get_data((uint8_t *) pIMU);
+	PROTOCOL_INS ins = pack_function(MPU6500_MODULE, MPU6500_GETDATA, 0, lag, 0, 0);
+	PROTOCOL_send(1, &ins);
+	PROTOCOL_decode();
+	memcpy(pIMU, data_holder1, 14);
 }
 
 void MPU6500_getRAWData(uint8_t *data1, uint32_t lag)
 {
-	PARAMETER *args;
-	uint8_t *data = nullptr;
-	int8_t ret = 0;
-	uint8_t *datap = nullptr;
-	int i = 0;
-
-	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 1);
-	data = (uint8_t *) (malloc(4));
-
-	datap = data;
-
-	add_PARAMETER(lag, 4);
-
-	send_commend_with_arg(MPU6500_MODULE, MPU6500_GETRAWDATA, 1, args, data);
-	get_data(data1);
+	PROTOCOL_INS ins = pack_function(MPU6500_MODULE, MPU6500_GETRAWDATA, 0, lag, 0, 0);
+	PROTOCOL_send(1, &ins);
+	PROTOCOL_decode();
+	memcpy(data1, data_holder1, 14);
 }
 
 int8_t MPU6500_Init(uint8_t *Configs, uint16_t len)
 {
-	PARAMETER *args;
-	uint8_t *data = nullptr;
-	uint8_t *datap = nullptr;
-	int i = 0;
-	uint8_t addr = 0;
-	int8_t ret = 0;
-
-	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 2);
-	data = (uint8_t *) (malloc(1 + 2));
-	datap = data;
-
-
-	if ( Configs == nullptr ) {
-		addr = 0;
-	} else {
-		addr = PROTOCOL_DATA1;
-		send_data(PROTOCOL_DATA1, Configs, static_cast<uint16_t>(len * 2));
-		ret = (int8_t) get_data(nullptr);
-		if ( ret != 0 ) {
-			printf("[MPU6500_Init]send fail\n");
-			return -1;
+	PROTOCOL_INS ins[200];
+	int16_t copied_len = 0;
+	uint16_t i = 0;
+	uint8_t buf[16] = {0,};
+	while (len > copied_len) {
+		if ( len - copied_len < 16 ) {
+			memcpy(buf, Configs + copied_len, size_t(len*2 - copied_len));
+			ins[i++] = pack_data(DATA_MODULE, LIB_DATA1, buf);
+		} else {
+			ins[i++] = pack_data(DATA_MODULE, LIB_DATA1, Configs + copied_len);
 		}
-	}
+		copied_len += 16;
+	}ins[i++] = pack_function(PROTOCOL_MODULE, PROTOCOL_BACK, LIB_DATA1, 0, 0, 0);
+	ins[i++] = pack_function(MPU6500_MODULE, MPU6500_INIT, LIB_DATA1, len, 0, 0);
 
-	add_PARAMETER(addr, 1);
-	add_PARAMETER(len, 2);
-	fflush(stdout);
-	send_commend_with_arg(MPU6500_MODULE, MPU6500_INIT, 2, args, data);
-	ret = (int8_t) get_data(nullptr);
-	return ret;
+	PROTOCOL_send(i, ins);
+	return (int8_t)PROTOCOL_decode();
 }
 
 
 //==================================
 void Protocol_debug(uint32_t d1, uint32_t d2, uint32_t d3, uint32_t d4)
 {
-	PARAMETER *args;
-	uint8_t *data = nullptr;
-	int8_t ret = 0;
-	uint8_t *datap = nullptr;
+	PROTOCOL_INS ins = pack_function(PROTOCOL_MODULE, PROTOCOL_DEBUG, d1, d2, d3, d4);
+	PROTOCOL_send(1, &ins);
+	PROTOCOL_decode();
+}
+
+//==================================
+void Data_data_n(uint8_t n, uint8_t *data, int len)
+{
+	PROTOCOL_INS ins[200];
+	int16_t copied_len = 0;
 	int i = 0;
-	char print[1024];
+	uint8_t buf[16] = {0,};
+	while (len > copied_len) {
+		if ( len - copied_len < 16 ) {
+			memcpy(buf, data + copied_len, size_t(len - copied_len));
+			ins[i++] = pack_data(DATA_MODULE, n, buf);
+		} else {
+			ins[i++] = pack_data(DATA_MODULE, n, data + copied_len);
+		}
+		copied_len += 16;
+	}
+	ins[i++] = pack_function(PROTOCOL_MODULE, PROTOCOL_SHOW_DATA, n, 0, 0, 0);
+	PROTOCOL_send(uint16_t(i), ins);
+	PROTOCOL_decode();
+}
 
-	args = (PARAMETER *) malloc(sizeof(PARAMETER) * 4);
-	data = (uint8_t *) (malloc(4));
-
-	datap = data;
-
-	add_PARAMETER(d1, 4);
-	add_PARAMETER(d2, 4);
-	add_PARAMETER(d3, 4);
-	add_PARAMETER(d4, 4);
-
-	send_commend_with_arg(PROTOCOL_MODULE, PROTOCOL_DEBUG, 4, args, data);
-	memset(print, 0, 1024);
-	ret = get_data((uint8_t *) print);
-	printf("[DEBUG] ret = %d\n", ret);
+void Data_back(uint8_t n, uint8_t *data_send, uint8_t *data_recv, int len)
+{
+	PROTOCOL_INS ins[200];
+	int16_t copied_len = 0;
+	int i = 0;
+	uint8_t buf[16] = {0,};
+	while (len > copied_len) {
+		if ( len - copied_len < 16 ) {
+			memcpy(buf, data_send + copied_len, size_t(len - copied_len));
+			ins[i++] = pack_data(DATA_MODULE, n, buf);
+		} else {
+			ins[i++] = pack_data(DATA_MODULE, n, data_send + copied_len);
+		}
+		copied_len += 16;
+	}
+	ins[i++] = pack_function(PROTOCOL_MODULE, PROTOCOL_BACK, n, 0, 0, 0);
+	PROTOCOL_send(uint16_t(i), ins);
+	PROTOCOL_decode();
+	memcpy(data_recv, data_holder1, len);
 }

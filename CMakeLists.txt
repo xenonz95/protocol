@@ -3,7 +3,9 @@ project(protocol)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(protocol main.cpp protocol.cpp protocol.h type.h lib.cpp lib.h)
-add_library(protocol_lib SHARED protocol.cpp protocol.h type.h lib.cpp lib.h)
+add_executable(protocol main.cpp protocol.cpp protocol.h lib.cpp lib.h rawData.cpp rawData.h ins_process.cpp ins_process.h)
+add_library(protocol_lib SHARED protocol.cpp protocol.h lib.cpp lib.h rawData.cpp rawData.h ins_process.cpp ins_process.h)
 
-add_executable(run run.cpp protocol.cpp protocol.h type.h lib.cpp lib.h)
+add_executable(run run.cpp protocol.cpp protocol.h lib.cpp lib.h rawData.cpp rawData.h ins_process.cpp ins_process.h)
+
+add_executable(new new.cpp protocol.cpp protocol.h lib.cpp lib.h rawData.cpp rawData.h ins_process.cpp ins_process.h)
