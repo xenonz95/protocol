@@ -3,8 +3,9 @@
 //
 
 #include <cstring>
-#include "ins_process.h"
-#include "lib.h"
+#include "../include/ins_process.h"
+#include "../include/lib.h"
+#include "../include/vm.h"
 
 PROTOCOL_INS inss[100] = {0,};
 VM_Register Reg = {0,};

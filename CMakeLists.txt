@@ -3,9 +3,9 @@ project(protocol)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(protocol main.cpp protocol.cpp protocol.h lib.cpp lib.h rawData.cpp rawData.h ins_process.cpp ins_process.h)
-add_library(protocol_lib SHARED protocol.cpp protocol.h lib.cpp lib.h rawData.cpp rawData.h ins_process.cpp ins_process.h)
+add_executable(protocol src/main.cpp lib/src/protocol.cpp lib/include/protocol.h lib/src/lib.cpp lib/include/lib.h lib/src/rawData.cpp lib/include/rawData.h lib/src/ins_process.cpp lib/include/ins_process.h lib/src/vm.cpp lib/include/vm.h lib/include/function.h lib/src/funtion.cpp)
+add_library(protocol_lib SHARED lib/src/protocol.cpp lib/include/protocol.h lib/src/lib.cpp lib/include/lib.h lib/src/rawData.cpp lib/include/rawData.h lib/src/ins_process.cpp lib/include/ins_process.h lib/src/vm.cpp lib/include/vm.h lib/include/function.h lib/src/funtion.cpp)
 
-add_executable(run run.cpp protocol.cpp protocol.h lib.cpp lib.h rawData.cpp rawData.h ins_process.cpp ins_process.h)
+add_executable(run src/run.cpp lib/src/protocol.cpp lib/include/protocol.h lib/src/lib.cpp lib/include/lib.h lib/src/rawData.cpp lib/include/rawData.h lib/src/ins_process.cpp lib/include/ins_process.h lib/src/vm.cpp lib/include/vm.h lib/include/function.h lib/src/funtion.cpp)
 
-add_executable(new new.cpp protocol.cpp protocol.h lib.cpp lib.h rawData.cpp rawData.h ins_process.cpp ins_process.h)
+add_executable(new src/new.cpp lib/src/protocol.cpp lib/include/protocol.h lib/src/lib.cpp lib/include/lib.h lib/src/rawData.cpp lib/include/rawData.h lib/src/ins_process.cpp lib/include/ins_process.h lib/src/vm.cpp lib/include/vm.h lib/include/function.h lib/src/funtion.cpp)

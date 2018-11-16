@@ -1,81 +1,11 @@
 //
-// Created by root on 18-8-29.
+// Created by root on 18-10-29.
 //
 
-#ifndef PROTOCOL_LIB_H
-#define PROTOCOL_LIB_H
+#ifndef PROTOCOL_FUNCTION_H
+#define PROTOCOL_FUNCTION_H
 
-
-#include <cstdlib>
-
-#include "protocol.h"
-
-extern uint8_t data_holder1[1024];
-extern uint8_t DATA_counter;
-
-
-
-enum{
-	PROTOCOL_MODULE = 0,
-	SPI_MODULE = 1,
-	PWM_MODULE,
-	MPU6500_MODULE,
-	GPIO_MODULE,
-	STEPPER_MODULE,
-	DATA_MODULE,
-};
-
-enum{
-	PROTOCOL_FAIL = 0,
-	PROTOCOL_NORMAL,
-	PROTOCOL_PURE_DATA,
-	PROTOCOL_DEBUG,
-	PROTOCOL_PRINT,
-	PROTOCOL_BACK,
-	PROTOCOL_SHOW_DATA,
-};
-
-enum{
-	LIB_DATA1 = 0,
-	LIB_DATA2,
-	LIB_DATA3,
-	LIB_DATA4,
-	LIB_NULL,
-};
-
-enum{
-	SPI_SETSPEED = 1,
-	SPI_RW_1, // u16 u16
-};
-
-enum{
-	PWM_SETTING = 1, // u8
-};
-
-enum{
-	MPU6500_RWREG = 1,
-	MPU6500_INIT,
-	MPU6500_CHECK,
-	MPU6500_GETDATA,
-	MPU6500_GETRAWDATA,
-};
-
-// TODO: need separate GPIO module from SPI
-
-enum {
-	STEPPER_INIT = 1,
-	STEPPER_ENABLE,
-	STEPPER_SET_SPEED,
-	STEPPER_SET_HOME,       //TODO
-	STEPPER_GET_POSITION,   //TODO
-	STEPPER_MOVE,
-	STEPPER_RUN,            //TODO
-	STEPPER_STOP,           //TODO
-	STEPPER_HARD_STOP,      //TODO
-	STEPPER_IS_BUSY,        //TODO
-};
-
-
+#include <cstdint>
 
 //PWM
 extern "C" {
@@ -341,6 +271,7 @@ void MPU6500_getRAWData(uint8_t *data, uint32_t lag);
 }
 //MPU6500 END
 
+
 //debug start
 extern "C" {
 void Protocol_debug(uint32_t d1, uint32_t d2, uint32_t d3, uint32_t d4);
@@ -351,4 +282,10 @@ extern "C" {
 void Data_data_n(uint8_t n, uint8_t* data, int len);
 void Data_back(uint8_t  n, uint8_t * data_send, uint8_t * data_recv, int len);
 }
-#endif //PROTOCOL_LIB_H
+
+//vm start
+extern "C" {
+
+}
+
+#endif //PROTOCOL_FUNCTION_H

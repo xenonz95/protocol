@@ -7,7 +7,7 @@
 #include <cstdio>
 #include <unistd.h>
 #include <cstdlib>
-#include "rawData.h"
+#include "../include/rawData.h"
 
 bool init_is_ok = 0;
 int file_d = 0;

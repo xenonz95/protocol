@@ -1,42 +1,12 @@
 //
-// Created by root on 18-8-29.
+// Created by root on 18-10-29.
 //
 
-#include <cstring>
-#include "lib.h"
-#include "protocol.h"
+#include "../include/function.h"
+#include "../include/protocol.h"
+#include "../include/lib.h"
+#include <string.h>
 
-uint8_t data_holder1[1024];
-uint8_t DATA_counter = 0;
-
-
-static inline PROTOCOL_INS pack_data(uint16_t module,
-                                     uint16_t command,
-                                     uint8_t data[16])
-{
-	PROTOCOL_INS temp_ins;
-	temp_ins.moudle = module;
-	temp_ins.command = command;
-	memcpy(temp_ins.data.pure.data, data, 16);
-	return temp_ins;
-}
-
-static inline PROTOCOL_INS pack_function(uint16_t module,
-                                         uint16_t command,
-                                         int32_t p1,
-                                         int32_t p2,
-                                         int32_t p3,
-                                         int32_t p4)
-{
-	PROTOCOL_INS temp_ins;
-	temp_ins.moudle = module;
-	temp_ins.command = command;
-	temp_ins.data.normal.p1 = p1;
-	temp_ins.data.normal.p2 = p2;
-	temp_ins.data.normal.p3 = p3;
-	temp_ins.data.normal.p4 = p4;
-	return temp_ins;
-}
 
 uint8_t PWM_setting(uint8_t power)
 {

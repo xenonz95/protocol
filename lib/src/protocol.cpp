@@ -3,9 +3,9 @@
 //
 
 #include <cstring>
-#include "protocol.h"
-#include "rawData.h"
-#include "ins_process.h"
+#include "../include/protocol.h"
+#include "../include/rawData.h"
+#include "../include/ins_process.h"
 
 uint8_t *command_temp;
 

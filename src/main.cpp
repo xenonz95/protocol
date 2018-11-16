@@ -1,6 +1,6 @@
 #include <cstdio>
 #include <cstring>
-#include "lib.h"
+#include "../lib/include/lib.h"
 #include <ctime>
 #include <iostream>
 

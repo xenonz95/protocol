@@ -34,10 +34,24 @@ typedef struct {
 	uint8_t data[16]; //pure data
 } PROTOCOL_DATA_pure;
 
-typedef union {
+typedef struct
+{
+	uint8_t opcode;
+	uint8_t funt;
+	uint8_t rs1;
+	int32_t ris2;
+	int8_t rt;
+	uint8_t sw;
+	uint8_t null[7];
+}VM_INS;
+
+typedef union
+{
 	PROTOCOL_DATA_normal normal;
 	PROTOCOL_DATA_pure pure;
+	VM_INS ins;
 } PROTOCOL_DATA;
+
 
 typedef struct {
 	uint16_t moudle;
