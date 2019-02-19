@@ -92,7 +92,7 @@ void sendData(uint8_t *data, int num)
 		//printf("[%x %c]",data[i],data[i]);
 	}
 	while (num > sended) {
-		ret = write(file_d, data + sended, num - sended);
+		ret = write(file_d, data + sended, (num - sended)>=64?(num - sended):64);
 		//printf("sended %d\n", ret);
 		if ( ret < 0 ) {
 			ret = 0;

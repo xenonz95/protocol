@@ -16,10 +16,17 @@ void PROTOCOL_send(uint16_t length, PROTOCOL_INS *ins)
 	uint16_t i = 0;
 	temp_head.magic = PROTOCOL_MAGIC;
 	temp_head.length = length;
-	sendData((uint8_t *) &temp_head, sizeof(temp_head));
+
+	size_t full_length = 0;
+	full_length = sizeof(temp_head) + length * sizeof(PROTOCOL_INS);
+	uint8_t *data = (uint8_t *) malloc(full_length);
+	memcpy(data, &temp_head, sizeof(temp_head));
 	for (i = 0; i < length; i++) {
-		sendData((uint8_t *) (ins + i), sizeof(PROTOCOL_INS));
+		memcpy(data + sizeof(temp_head) + sizeof(PROTOCOL_INS) * i, (uint8_t *) (ins + i), sizeof
+				(PROTOCOL_INS));
 	}
+	sendData(data, (int) full_length);
+	free(data);
 }
 
 int32_t PROTOCOL_decode()

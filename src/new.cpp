@@ -23,13 +23,15 @@ void print_time()
 
 int main()
 {
+	clock_t t1 = clock();
+/*
 //	uint8_t ret = PWM_setting(21);
 //	printf("ret = %d\n", ret);
 //	//fflush(stdout);
 //	//Protocol_debug(100000, 200000, 300000, 400000);
 //	//Protocol_debug(120, 2020, 30200, 40200);
 //
-	clock_t t1 = clock();
+
 //	PWM_setting(16);
 //	cout << (clock() - t1) * 1.0 / CLOCKS_PER_SEC * 1000 << endl;
 //	t1 = clock();
@@ -56,6 +58,7 @@ int main()
 	printf("[back] %s\n", buf);
 	cout << (clock() - t1) * 1.0 / CLOCKS_PER_SEC * 1000 << endl;
 	t1 = clock();
+*/
 
 
 	PROTOCOL_INS inss[] = {
@@ -121,21 +124,51 @@ int main()
 
 
 	};
+	PROTOCOL_INS fun_no_work_loop[] = {
+
+			pack_vm(VM_CACULATE_I, ADD, ZERO, 0, AX, 0),
+			pack_vm(VM_CACULATE_I, ADD, ZERO, 1024, BX, 0),
+
+			//pack_function(VM_MODULE, VM_DEBUG, 0, 0, 0, 0),
+
+			pack_vm(VM_CACULATE_I, ADD, AX, 0, P1, 0),
+
+			pack_function(VM_MODULE, VM_USE_REG, 0, 0, 0, 0),
+			pack_function(PWM_MODULE, PWM_SETTING, 0, 0, 0, 0),
+			pack_function(VM_MODULE, VM_NOTUSE_REG, 0, 0, 0, 0),
+
+			pack_vm(VM_CACULATE_I, ADD, AX, 1, AX, 0),
+
+			pack_vm(JUMP_IF, 0, AX, BX, 1, 0),
+			pack_vm(JUMP_IF, 0, ZERO, ZERO, -6, 0),
+
+	};
+
+	PROTOCOL_INS test[] = {
+			pack_function(PROTOCOL_MODULE, PROTOCOL_TEST, 12, 0, 0, 0),
+
+	};
+
+
 
 #define SEND_INS(ins) sizeof(ins)/sizeof(ins[0]),ins
 	printf("=================\n");
-	PROTOCOL_send(SEND_INS(fun_loop));
+	PROTOCOL_send(SEND_INS(test));
 	PROTOCOL_decode();
 	cout << (clock() - t1) * 1.0 / CLOCKS_PER_SEC * 1000 << endl;
-	t1 = clock();
-for(double i = 1; i<= 256 ; i*=1.002)
-{
-	PWM_setting((uint8_t)i);
-	//usleep(1000);
-
-}
-	cout << (clock() - t1) * 1.0 / CLOCKS_PER_SEC * 1000 << endl;
-	t1 = clock();
+//	t1 = clock();
+//	PROTOCOL_send(SEND_INS(fun_loop));
+//	PROTOCOL_decode();
+//	cout << (clock() - t1) * 1.0 / CLOCKS_PER_SEC * 1000 << endl;
+//	t1 = clock();
+//for(int i = 1; i< 256 ; i++)
+//{
+//	PWM_setting((uint8_t)i);
+//	usleep(10000);
+//
+//}
+//	cout << (clock() - t1) * 1.0 / CLOCKS_PER_SEC * 1000 << endl;
+//	t1 = clock();
 
 	return 0;
 
