@@ -4,7 +4,7 @@
 
 #include <cstdio>
 #include <cstring>
-#include "../lib/include/lib.h"
+#include "lib.h"
 #include <ctime>
 #include <iostream>
 
@@ -15,12 +15,14 @@ int main()
 	int ret = 0;
 	clock_t t1 = clock();
 	PWM_setting(16);
-	//cout << (clock()- t1)*1.0/CLOCKS_PER_SEC*1000 << endl;t1 = clock();
+	PWM_setting(16);
+	PWM_setting(16);
+	cout << (clock()- t1)*1.0/CLOCKS_PER_SEC*1000 << endl;t1 = clock();
 	//Protocol_debug(10020,20100,3001000,40100);
 	//cout << (clock()- t1)*1.0/CLOCKS_PER_SEC*1000 << endl;t1 = clock();
 	//Protocol_debug(40020,30100,2001000,10100);
 	//cout << (clock()- t1)*1.0/CLOCKS_PER_SEC*1000 << endl;t1 = clock();
-	ret = Stepper_Init(2);
+	/*ret = Stepper_Init(2);
 	//cout << (clock()- t1)*1.0/CLOCKS_PER_SEC*1000 << endl;t1 = clock();
 	printf("ret11 = %d\n",ret);
 	ret = Stepper_Init(3);
@@ -37,7 +39,7 @@ int main()
 	printf("ret13 = %d\n",ret);
 	ret = Stepper_Move(3,1,2000);
 	//cout << (clock()- t1)*1.0/CLOCKS_PER_SEC*1000 << endl;t1 = clock();
-	printf("ret23 = %d\n",ret);
+	printf("ret23 = %d\n",ret);*/
 	
 	return 0;
 }

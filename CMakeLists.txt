@@ -3,6 +3,9 @@ project(protocol)
 
 set(CMAKE_CXX_STANDARD 11)
 
+include_directories(lib/include lib/src src)
+
+
 add_executable(protocol src/main.cpp
                lib/src/protocol.cpp
                lib/include/protocol.h
@@ -71,6 +74,22 @@ add_executable(car
                lib/include/rawData.h
                lib/src/ins_process.cpp
                lib/include/ins_process.h
-               lib/src/vm.cpp lib/include/vm.h
+               lib/src/vm.cpp
+               lib/include/vm.h
+               lib/include/function.h
+               lib/src/funtion.cpp)
+
+add_executable(simple
+               src/simple_test.cpp
+               lib/src/protocol.cpp
+               lib/include/protocol.h
+               lib/src/lib.cpp
+               lib/include/lib.h
+               lib/src/rawData.cpp
+               lib/include/rawData.h
+               lib/src/ins_process.cpp
+               lib/include/ins_process.h
+               lib/src/vm.cpp
+               lib/include/vm.h
                lib/include/function.h
                lib/src/funtion.cpp)

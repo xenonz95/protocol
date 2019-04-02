@@ -7,27 +7,31 @@
 #include <cstdio>
 #include <unistd.h>
 #include <cstdlib>
-#include "../include/rawData.h"
+#include "rawData.h"
 
-bool init_is_ok = 0;
-int file_d = 0;
+
+
+#define ENDPOINT_NUM 20
+bool init_is_ok[ENDPOINT_NUM] = {0};
+int file_d[ENDPOINT_NUM] = {0};
+int endpoint = 0;
 
 int8_t data_init()
 {
-	if ( init_is_ok != 0 ) {
+	if ( init_is_ok[endpoint] != 0 ) {
 		return 0;
 	}
 	termios oldtio;
 	uint8_t trash;
-	file_d = open("/dev/ttyACM0", O_RDWR | O_NDELAY | O_NOCTTY);
-	if ( file_d <= 0 ) {
+	file_d[endpoint] = open("/dev/ttyACM0", O_RDWR | O_NDELAY | O_NOCTTY);
+	if ( file_d[endpoint] <= 0 ) {
 		perror("[open tty fail]");
 		return -1;
 	}
-	if ( tcflush(file_d, TCIFLUSH) < 0 ) {
+	if ( tcflush(file_d[endpoint], TCIFLUSH) < 0 ) {
 		perror("[flush tty fail]");
 	}
-	if ( tcgetattr(file_d, &oldtio) != 0 ) {
+	if ( tcgetattr(file_d[endpoint], &oldtio) != 0 ) {
 		perror("[SetupSerial]");
 		return -1;
 	}
@@ -42,21 +46,24 @@ int8_t data_init()
 	oldtio.c_iflag &= ~(ICRNL | INLCR);
 	oldtio.c_iflag &= ~(IXON | IXOFF | IXANY);
 
-	oldtio.c_cflag &= ~CRTSCTS; //no flow control
+	//oldtio.c_cflag &= ~CRTSCTS; //no flow control
 
-	tcflush(file_d, TCIOFLUSH);
+	tcflush(file_d[endpoint], TCIOFLUSH);
 
 	oldtio.c_cc[VTIME] = 0;
 	oldtio.c_cc[VMIN] = 0;
 
-	tcsetattr(file_d, TCIOFLUSH, &oldtio);
-	init_is_ok = 1;
+	tcsetattr(file_d[endpoint], TCIOFLUSH, &oldtio);
+	init_is_ok[endpoint] = 1;
+	nice(-20);
 	return 0;
 }
 
 void data_deinit()
 {
-	close(file_d);
+	if ( init_is_ok[endpoint] ) {
+		close(file_d[endpoint]);
+	}
 }
 
 void getData(int num, uint8_t *data_holder)
@@ -66,7 +73,7 @@ void getData(int num, uint8_t *data_holder)
 	ssize_t ret = 0;
 	char *debug = (char *) data_holder;
 	for (int i = 0; i < num; i++) {
-		ret = read(file_d, data_holder + i, 1);
+		ret = read(file_d[endpoint], data_holder + i, 1);
 		if ( ret <= 0 ) {
 			i--;
 		} else {
@@ -92,7 +99,7 @@ void sendData(uint8_t *data, int num)
 		//printf("[%x %c]",data[i],data[i]);
 	}
 	while (num > sended) {
-		ret = write(file_d, data + sended, (num - sended)>=64?(num - sended):64);
+		ret = write(file_d[endpoint], data + sended, (num - sended) >= 64 ? (num - sended) : 64);
 		//printf("sended %d\n", ret);
 		if ( ret < 0 ) {
 			ret = 0;
@@ -106,3 +113,9 @@ void sendData(uint8_t *data, int num)
 		}
 	}
 }
+
+void change_endpoint(int end)
+{
+	endpoint = end;
+}
+

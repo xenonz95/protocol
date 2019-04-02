@@ -3,9 +3,9 @@
 //
 
 #include <cstring>
-#include "../include/lib.h"
-#include "../include/protocol.h"
-#include "../include/vm.h"
+#include "lib.h"
+#include "protocol.h"
+#include "vm.h"
 
 uint8_t data_holder1[1024];
 uint8_t DATA_counter = 0;

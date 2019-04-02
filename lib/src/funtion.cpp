@@ -2,9 +2,9 @@
 // Created by root on 18-10-29.
 //
 
-#include "../include/function.h"
-#include "../include/protocol.h"
-#include "../include/lib.h"
+#include "function.h"
+#include "protocol.h"
+#include "lib.h"
 #include <string.h>
 
 

@@ -2,8 +2,8 @@
 // Created by root on 18-12-18.
 //
 
-#include "../lib/include/lib.h"
-#include "../lib/include/vm.h"
+#include "lib.h"
+#include "vm.h"
 
 
 #include <iostream>

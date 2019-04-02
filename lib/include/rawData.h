@@ -11,4 +11,6 @@
 void getData(int num, uint8_t* data_holder);
 void sendData(uint8_t* data, int num);
 
+void change_endpoint(int end);
+
 #endif //PROTOCOL_RAWDATA_H
