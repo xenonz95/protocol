@@ -7,10 +7,11 @@
 
 
 #include <cstdint>
+#include <string>
 
 void getData(int num, uint8_t* data_holder);
 void sendData(uint8_t* data, int num);
 
-void change_endpoint(int end);
+void change_endpoint(int end, std::string s = "ttyACM0");
 
 #endif //PROTOCOL_RAWDATA_H

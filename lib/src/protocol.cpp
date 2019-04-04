@@ -19,7 +19,10 @@ void PROTOCOL_send(uint16_t length, PROTOCOL_INS *ins)
 
 	size_t full_length = 0;
 	full_length = sizeof(temp_head) + length * sizeof(PROTOCOL_INS);
+	//printf("[%ld %d %ld %ld]\n",sizeof(temp_head),length,sizeof(PROTOCOL_INS),full_length);
 	uint8_t *data = (uint8_t *) malloc(full_length);
+	memset(data, 0, full_length);
+	//printf("full = %ld, size = %ld\n",full_length, sizeof(data));
 	memcpy(data, &temp_head, sizeof(temp_head));
 	for (i = 0; i < length; i++) {
 		memcpy(data + sizeof(temp_head) + sizeof(PROTOCOL_INS) * i, (uint8_t *) (ins + i), sizeof

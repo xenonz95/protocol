@@ -8,12 +8,14 @@
 #include <unistd.h>
 #include <cstdlib>
 #include "rawData.h"
+#include <string>
 
-
+using namespace std;
 
 #define ENDPOINT_NUM 20
 bool init_is_ok[ENDPOINT_NUM] = {0};
 int file_d[ENDPOINT_NUM] = {0};
+string endpoint_name[ENDPOINT_NUM] = {"ttyACM0",};
 int endpoint = 0;
 
 int8_t data_init()
@@ -23,7 +25,8 @@ int8_t data_init()
 	}
 	termios oldtio;
 	uint8_t trash;
-	file_d[endpoint] = open("/dev/ttyACM0", O_RDWR | O_NDELAY | O_NOCTTY);
+	file_d[endpoint] = open(("/dev/" + endpoint_name[endpoint]).c_str(),
+	                        O_RDWR | O_NDELAY | O_NOCTTY);
 	if ( file_d[endpoint] <= 0 ) {
 		perror("[open tty fail]");
 		return -1;
@@ -63,6 +66,7 @@ void data_deinit()
 {
 	if ( init_is_ok[endpoint] ) {
 		close(file_d[endpoint]);
+		init_is_ok[endpoint] = 0;
 	}
 }
 
@@ -99,7 +103,7 @@ void sendData(uint8_t *data, int num)
 		//printf("[%x %c]",data[i],data[i]);
 	}
 	while (num > sended) {
-		ret = write(file_d[endpoint], data + sended, (num - sended) >= 64 ? (num - sended) : 64);
+		ret = write(file_d[endpoint], data + sended, num - sended);
 		//printf("sended %d\n", ret);
 		if ( ret < 0 ) {
 			ret = 0;
@@ -114,8 +118,12 @@ void sendData(uint8_t *data, int num)
 	}
 }
 
-void change_endpoint(int end)
+void change_endpoint(int end, string s)
 {
 	endpoint = end;
+	if ( init_is_ok[endpoint] == 0 ) {
+		endpoint_name[endpoint] = s;
+	}
 }
+
 
